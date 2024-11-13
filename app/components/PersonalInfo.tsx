@@ -8,6 +8,7 @@ interface PersonalInfoData {
   designation: string;
   email: string;
   phone: string;
+  location: string;
   portfolio: string;
   github: string;
   twitter: string;
@@ -58,8 +59,8 @@ export default function PersonalInfo({ data, onChange }: PersonalInfoProps) {
           </div>
         </div>
 
-        {/* Email and Phone */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Email, Phone, and Location */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-700">
               Email
@@ -82,6 +83,19 @@ export default function PersonalInfo({ data, onChange }: PersonalInfoProps) {
               value={data.phone}
               onChange={(e) => onChange({ ...data, phone: e.target.value })}
               placeholder="+1 234 567 8900"
+              className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">
+              Location
+            </label>
+            <input
+              type="text"
+              value={data.location}
+              onChange={(e) => onChange({ ...data, location: e.target.value })}
+              placeholder="Bhopal, India"
               className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>

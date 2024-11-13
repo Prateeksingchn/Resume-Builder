@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { FaTwitter, FaLinkedin, FaGithub, FaGlobe } from 'react-icons/fa';
+import { FaTwitter, FaLinkedin, FaGithub, FaGlobe, FaMapMarkerAlt } from 'react-icons/fa';
 import { MdEmail, MdPhone } from 'react-icons/md';
 
 interface Project {
@@ -14,7 +14,17 @@ interface Project {
 }
 
 interface PreviewProps {
-  personalInfo: any;
+  personalInfo: {
+    name: string;
+    designation: string;
+    email: string;
+    phone: string;
+    location: string;
+    portfolio: string;
+    github: string;
+    twitter: string;
+    linkedin: string;
+  };
   profileSummary: string;
   education: any[];
   experience: any[];
@@ -45,9 +55,9 @@ export default function ResumePreview({
       <div className="text-center mb-4">
         <h1 className="text-3xl font-bold text-gray-900">{personalInfo.name || 'Your Name'}</h1>
         {personalInfo.designation && (
-          <h2 className="text-lg text-gray-600 mt-1 mb-2">{personalInfo.designation}</h2>
+          <h2 className="text-lg text-gray-800 font-medium mt-0 mb-0">{personalInfo.designation}</h2>
         )}
-        <div className="flex justify-center items-center gap-4 mt-2 text-sm flex-wrap">
+        <div className="flex justify-center items-center gap-4 mt-1 text-sm flex-wrap">
           {personalInfo.phone && (
             <span className="flex items-center gap-1 text-black">
               <MdPhone className="w-4 h-4" />
@@ -60,8 +70,14 @@ export default function ResumePreview({
               {personalInfo.email}
             </span>
           )}
+          {personalInfo.location && (
+            <span className="flex items-center gap-1 text-black">
+              <FaMapMarkerAlt className="w-4 h-4" />
+              {personalInfo.location}
+            </span>
+          )}
         </div>
-        <div className="flex justify-center gap-4 mt-2 text-sm border-t border-gray-200 pt-2">
+        <div className="flex justify-center gap-8 mt-2 text-sm">
           {personalInfo.twitter && (
             <a 
               href={personalInfo.twitter}
@@ -179,16 +195,14 @@ export default function ResumePreview({
                 <div className="flex items-center gap-2 mb-1">
                   <span className="font-medium">{proj.name}</span>
                   {proj.url && (
-                    <>
-                      <a 
-                        href={proj.url}
-                        className="text-black hover:text-gray-600 inline-flex items-center"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <FaGlobe className="w-3 h-3" />
-                      </a>
-                    </>
+                    <a 
+                      href={proj.url}
+                      className="text-black hover:text-gray-600 inline-flex items-center"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <FaGlobe className="w-3 h-3" />
+                    </a>
                   )}
                   {proj.techStack && (
                     <>
@@ -199,16 +213,14 @@ export default function ResumePreview({
                     </>
                   )}
                   {proj.sourceCode && (
-                    <>
-                      <a 
-                        href={proj.sourceCode}
-                        className="text-black hover:text-gray-600 inline-flex items-center"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Source Code
-                      </a>
-                    </>
+                    <a 
+                      href={proj.sourceCode}
+                      className="text-black hover:text-gray-600 inline-flex items-center"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Source Code
+                    </a>
                   )}
                 </div>
                 
