@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { FaTwitter, FaLinkedin, FaGithub, FaGlobe, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaTwitter, FaLinkedin, FaGithub, FaGlobe, FaMapMarkerAlt, FaLink } from 'react-icons/fa';
 import { MdEmail, MdPhone } from 'react-icons/md';
 
 interface Project {
@@ -128,11 +128,9 @@ export default function ResumePreview({
       {/* Profile Summary */}
       <div className="mb-3">
         <h2 className="text-lg font-bold border-b border-gray-300 mb-2">Profile Summary</h2>
-        <ul className="list-disc pl-5 space-y-0.5">
-          {profileSummary.split('\n').filter(line => line.trim()).map((point, index) => (
-            <li key={index} className="text-sm text-gray-700">{point.trim()}</li>
-          ))}
-        </ul>
+        <p className="text-sm text-gray-700">
+          {profileSummary}
+        </p>
       </div>
 
       {/* Experience Section */}
@@ -193,23 +191,22 @@ export default function ResumePreview({
             {projects.map((proj) => (
               <div key={proj.id} className="text-sm">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="font-medium">{proj.name}</span>
-                  {proj.url && (
-                    <a 
-                      href={proj.url}
-                      className="text-black hover:text-gray-600 inline-flex items-center"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <FaGlobe className="w-3 h-3" />
-                    </a>
-                  )}
+                  <a 
+                    href={proj.url}
+                    className="text-black hover:text-gray-600 inline-flex items-center"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <span className="font-medium">{proj.name}</span>
+                    <FaLink className="w-3 h-3 ml-1 mt-[2px]" />
+                  </a>
                   {proj.techStack && (
                     <>
-                      <span className="text-gray-400 mx-1">|</span>
+                      <span className="text-gray-400">|</span>
                       <span className="text-gray-700">
                         {proj.techStack}
                       </span>
+                      <span className="text-gray-400">|</span>
                     </>
                   )}
                   {proj.sourceCode && (
@@ -219,6 +216,7 @@ export default function ResumePreview({
                       target="_blank"
                       rel="noopener noreferrer"
                     >
+                      <FaGithub className="w-4 h-4 mr-1" />
                       Source Code
                     </a>
                   )}
