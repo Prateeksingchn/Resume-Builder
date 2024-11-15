@@ -9,6 +9,18 @@ import SkillsSection from './components/Skills';
 import CertificationsSection from './components/Certifications';
 import ProjectsSection from './components/Projects';
 import ResumePreview from './components/ResumePreview';
+import { HiChevronRight, HiDownload, HiUser, HiDocumentText, HiBriefcase, HiAcademicCap, HiCode, HiCollection, HiBadgeCheck } from 'react-icons/hi';
+
+// Navigation items with icons
+const navigationItems = [
+  { id: 'personal', name: 'Personal Info', icon: HiUser },
+  { id: 'summary', name: 'Profile Summary', icon: HiDocumentText },
+  { id: 'education', name: 'Education', icon: HiAcademicCap },
+  { id: 'experience', name: 'Experience', icon: HiBriefcase },
+  { id: 'skills', name: 'Skills', icon: HiCode },
+  { id: 'projects', name: 'Projects', icon: HiCollection },
+  { id: 'certifications', name: 'Certifications', icon: HiBadgeCheck },
+];
 
 export default function Home() {
   const [personalInfo, setPersonalInfo] = useState({
@@ -16,6 +28,7 @@ export default function Home() {
     designation: '',
     email: '',
     phone: '',
+    location: '',
     portfolio: '',
     github: '',
     twitter: '',
@@ -23,119 +36,178 @@ export default function Home() {
   });
 
   const [profileSummary, setProfileSummary] = useState('');
-  const [education, setEducation] = useState([]);
-  const [experience, setExperience] = useState([]);
-  const [skills, setSkills] = useState([]);
-  const [certifications, setCertifications] = useState([]);
-  const [projects, setProjects] = useState([]);
+  const [education, setEducation] = useState<any[]>([]);
+  const [experience, setExperience] = useState<any[]>([]);
+  const [skills, setSkills] = useState<any[]>([]);
+  const [certifications, setCertifications] = useState<any[]>([]);
+  const [projects, setProjects] = useState<any[]>([]);
+  const [activeSection, setActiveSection] = useState('personal');
+
+  // Calculate progress
+  const calculateProgress = () => {
+    const sections = {
+      personal: Object.values(personalInfo).some(val => val !== ''),
+      summary: profileSummary !== '',
+      education: education.length > 0,
+      experience: experience.length > 0,
+      skills: skills.length > 0,
+      projects: projects.length > 0,
+      certifications: certifications.length > 0
+    };
+    
+    const completedSections = Object.values(sections).filter(Boolean).length;
+    return Math.round((completedSections / Object.keys(sections).length) * 100);
+  };
+
+  const progress = calculateProgress();
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
-      {/* Hero Section */}
-      <div className="relative bg-gradient-to-r from-blue-600 to-indigo-600 py-10">
-        <div className="absolute inset-0 bg-grid-white/[0.05] bg-[size:16px]" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 font-sans">
-            Professional Resume Builder
-          </h1>
-          <p className="text-lg text-blue-100 max-w-2xl mx-auto">
-            Create a standout resume in minutes with our intuitive builder
-          </p>
+    <div className="min-h-screen bg-gray-50">
+      {/* Top Bar */}
+      <div className="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl font-semibold text-gray-900">Resume Builder</h1>
+            <span className="text-sm text-gray-500">v1.0</span>
+          </div>
+          <button className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-sm">
+            <HiDownload className="w-4 h-4" />
+            Download PDF
+          </button>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Form Section */}
-          <div className="space-y-6 py-8">
-            {/* Personal Info Card */}
-            <div className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-200/50">
-              <div className="p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Personal Information</h2>
-                <PersonalInfo data={personalInfo} onChange={setPersonalInfo} />
+      <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-4 py-8">
+        <div className="grid grid-cols-12 gap-4">
+          {/* Left Sidebar */}
+          <div className="col-span-2">
+            <nav className="sticky top-24 space-y-1">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+                <div className="p-4 space-y-4">
+                  {/* Progress indicator */}
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="font-medium text-gray-900">Progress</span>
+                      <span className="text-blue-600 font-medium">{progress}%</span>
+                    </div>
+                    <div className="w-full bg-gray-100 rounded-full h-2">
+                      <div 
+                        className="bg-blue-600 h-2 rounded-full transition-all duration-500 ease-out"
+                        style={{ width: `${progress}%` }}
+                      />
+                    </div>
+                  </div>
+                  
+                  {/* Navigation Items */}
+                  <div className="space-y-1">
+                    {navigationItems.map((item, index) => {
+                      const Icon = item.icon;
+                      return (
+                        <a 
+                          key={item.id}
+                          href={`#${item.id}`}
+                          className={`flex items-center gap-3 p-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                            activeSection === item.id 
+                              ? 'bg-blue-50 text-blue-600' 
+                              : 'text-gray-600 hover:bg-gray-50'
+                          }`}
+                          onClick={() => setActiveSection(item.id)}
+                        >
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors duration-200 ${
+                            activeSection === item.id ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-500'
+                          }`}>
+                            <Icon className="w-4 h-4" />
+                          </div>
+                          {item.name}
+                          <HiChevronRight className={`ml-auto transition-transform duration-200 ${
+                            activeSection === item.id ? 'transform rotate-90' : ''
+                          }`} />
+                        </a>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
-            </div>
+            </nav>
+          </div>
 
-            {/* Profile Summary Card */}
-            <div className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-200/50">
-              <div className="p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Profile Summary</h2>
-                <ProfileSummary summary={profileSummary} onChange={setProfileSummary} />
+          {/* Middle Section - Form */}
+          <div className="col-span-5">
+            <div className="space-y-6">
+              {/* Breadcrumb */}
+              <div className="flex items-center gap-2 text-sm text-gray-600 bg-white p-4 rounded-lg border border-gray-200">
+                <span className="font-medium text-gray-900">Resume Details</span>
+                <HiChevronRight className="text-gray-400" />
+                <span className="text-blue-600 font-medium">
+                  {activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
+                </span>
               </div>
-            </div>
 
-            {/* Education Card */}
-            <div className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-200/50">
-              <div className="p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Education</h2>
-                <EducationSection education={education} onChange={setEducation} />
+              {/* Form Sections */}
+              <div className="space-y-6">
+                {activeSection === 'personal' && (
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-200 transition-all duration-200 p-6">
+                    <PersonalInfo data={personalInfo} onChange={setPersonalInfo} />
+                  </div>
+                )}
+                
+                {activeSection === 'summary' && (
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-200 transition-all duration-200 p-6">
+                    <ProfileSummary summary={profileSummary} onChange={setProfileSummary} />
+                  </div>
+                )}
+                
+                {activeSection === 'experience' && (
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-200 transition-all duration-200 p-6">
+                    <ExperienceSection experience={experience} onChange={setExperience} />
+                  </div>
+                )}
+                
+                {activeSection === 'education' && (
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-200 transition-all duration-200 p-6">
+                    <EducationSection education={education} onChange={setEducation} />
+                  </div>
+                )}
+                
+                {activeSection === 'skills' && (
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-200 transition-all duration-200 p-6">
+                    <SkillsSection skills={skills} onChange={setSkills} />
+                  </div>
+                )}
+                
+                {activeSection === 'projects' && (
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-200 transition-all duration-200 p-6">
+                    <ProjectsSection projects={projects} onChange={setProjects} />
+                  </div>
+                )}
+                
+                {activeSection === 'certifications' && (
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-200 transition-all duration-200 p-6">
+                    <CertificationsSection certifications={certifications} onChange={setCertifications} />
+                  </div>
+                )}
               </div>
-            </div>
-
-            {/* Experience Card */}
-            <div className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-200/50">
-              <div className="p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Experience</h2>
-                <ExperienceSection experience={experience} onChange={setExperience} />
-              </div>
-            </div>
-
-            {/* Projects Card */}
-            <div className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-200/50">
-              <div className="p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Projects</h2>
-                <ProjectsSection projects={projects} onChange={setProjects} />
-              </div>
-            </div>
-
-            {/* Skills Card */}
-            <div className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-200/50">
-              <div className="p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Skills</h2>
-                <SkillsSection skills={skills} onChange={setSkills} />
-              </div>
-            </div>
-
-            {/* Certifications Card */}
-            <div className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-200/50">
-              <div className="p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Certifications</h2>
-                <CertificationsSection certifications={certifications} onChange={setCertifications} />
-              </div>
-            </div>
-
-            {/* Download Button */}
-            <div className="flex justify-center pt-6 pb-12">
-              <button className="group relative px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-3">
-                <span className="absolute inset-0 bg-grid-white/[0.05] bg-[size:16px] rounded-xl" />
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  className="h-5 w-5 group-hover:transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform" 
-                  viewBox="0 0 20 20" 
-                  fill="currentColor"
-                >
-                  <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
-                </svg>
-                <span className="font-medium text-lg">Download Resume</span>
-              </button>
             </div>
           </div>
 
-          {/* Preview Section */}
-          <div className="py-8">
-            <ResumePreview
-              personalInfo={personalInfo}
-              profileSummary={profileSummary}
-              education={education}
-              experience={experience}
-              skills={skills}
-              certifications={certifications}
-              projects={projects}
-            />
+          {/* Right Section - Preview */}
+          <div className="col-span-5">
+            <div className="sticky top-24">
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <ResumePreview
+                  personalInfo={personalInfo}
+                  profileSummary={profileSummary}
+                  education={education}
+                  experience={experience}
+                  skills={skills}
+                  certifications={certifications}
+                  projects={projects}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

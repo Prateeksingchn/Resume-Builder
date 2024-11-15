@@ -24,3 +24,114 @@ body {
   background: #f8fafc;
   min-height: 100vh;
 }
+
+/* Custom DatePicker Styles */
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.react-datepicker-popper {
+  z-index: 40 !important;
+}
+
+.date-picker-popper {
+  margin-top: 8px !important;
+}
+
+.react-datepicker {
+  @apply font-sans !important;
+  @apply bg-white !important;
+  @apply border-0 !important;
+  @apply shadow-lg !important;
+  @apply rounded-xl !important;
+  @apply p-4 !important;
+}
+
+.react-datepicker__header {
+  @apply bg-white !important;
+  @apply border-0 !important;
+  @apply p-0 !important;
+  @apply mb-4 !important;
+}
+
+.react-datepicker__current-month {
+  @apply text-gray-900 !important;
+  @apply font-semibold !important;
+  @apply mb-4 !important;
+}
+
+.react-datepicker__month {
+  @apply m-0 !important;
+}
+
+.react-datepicker__month-wrapper {
+  @apply grid !important;
+  @apply grid-cols-3 !important;
+  @apply gap-2 !important;
+}
+
+.react-datepicker__month-text {
+  @apply w-auto !important;
+  @apply m-0 !important;
+  @apply py-2 !important;
+  @apply px-2 !important;
+  @apply rounded-lg !important;
+  @apply text-sm !important;
+  @apply font-medium !important;
+  @apply cursor-pointer !important;
+}
+
+.react-datepicker__month-text:hover {
+  @apply bg-blue-50 !important;
+  @apply text-blue-600 !important;
+}
+
+.react-datepicker__month-text--selected {
+  @apply bg-blue-600 !important;
+  @apply text-white !important;
+}
+
+.react-datepicker__month-text--keyboard-selected {
+  @apply bg-blue-100 !important;
+  @apply text-blue-600 !important;
+}
+
+.react-datepicker__navigation {
+  @apply top-4 !important;
+}
+
+.react-datepicker__navigation-icon::before {
+  @apply border-gray-400 !important;
+}
+
+.react-datepicker__year-read-view--down-arrow {
+  @apply top-[2px] !important;
+  @apply border-gray-400 !important;
+}
+
+.react-datepicker__year-read-view--selected-year {
+  @apply text-gray-900 !important;
+  @apply font-medium !important;
+}
+
+.react-datepicker__year-dropdown {
+  @apply bg-white !important;
+  @apply border-gray-200 !important;
+  @apply rounded-lg !important;
+  @apply shadow-lg !important;
+  @apply p-2 !important;
+}
+
+.react-datepicker__year-option {
+  @apply py-2 !important;
+  @apply px-3 !important;
+  @apply hover:bg-blue-50 !important;
+  @apply hover:text-blue-600 !important;
+  @apply rounded-lg !important;
+  @apply cursor-pointer !important;
+}
+
+.react-datepicker__year-option--selected {
+  @apply bg-blue-600 !important;
+  @apply text-white !important;
+}

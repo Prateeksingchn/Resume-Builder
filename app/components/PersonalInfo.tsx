@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import SectionWrapper from './SectionWrapper';
+import { FaGithub, FaLinkedin, FaTwitter, FaGlobe } from 'react-icons/fa';
+import { MdEmail, MdPhone, MdLocationOn } from 'react-icons/md';
 
 interface PersonalInfoData {
   name: string;
@@ -21,144 +22,181 @@ interface PersonalInfoProps {
 }
 
 export default function PersonalInfo({ data, onChange }: PersonalInfoProps) {
-  const [isOpen, setIsOpen] = useState(true);
-
   return (
-    <SectionWrapper
-      title="Personal Information"
-      isOpen={isOpen}
-      onToggle={() => setIsOpen(!isOpen)}
-    >
-      <div className="grid grid-cols-1 gap-4">
-        {/* Name and Designation */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
-              Full Name
-            </label>
-            <input
-              type="text"
-              value={data.name}
-              onChange={(e) => onChange({ ...data, name: e.target.value })}
-              placeholder="John Doe"
-              className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
+    <div>
+      {/* Section Header */}
+      <div className="border-b pb-4 mb-6">
+        <h2 className="text-lg font-semibold text-gray-900">Personal Information</h2>
+        <p className="text-sm text-gray-500 mt-1">Add your personal details to create a standout resume</p>
+      </div>
+
+      <div className="space-y-8">
+        {/* Basic Info Section */}
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Name Input */}
+            <div className="space-y-1.5">
+              <label className="block text-sm font-medium text-gray-700">
+                Full Name <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                value={data.name}
+                onChange={(e) => onChange({ ...data, name: e.target.value })}
+                placeholder="John Doe"
+                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
+              />
+            </div>
+
+            {/* Designation Input */}
+            <div className="space-y-1.5">
+              <label className="block text-sm font-medium text-gray-700">
+                Current Role <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                value={data.designation}
+                onChange={(e) => onChange({ ...data, designation: e.target.value })}
+                placeholder="Full Stack Developer"
+                className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
+              />
+            </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
-              Designation
-            </label>
-            <input
-              type="text"
-              value={data.designation}
-              onChange={(e) => onChange({ ...data, designation: e.target.value })}
-              placeholder="Full Stack Developer"
-              className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
+          {/* Contact Information */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            {/* Email Input */}
+            <div className="space-y-1.5">
+              <label className="block text-sm font-medium text-gray-700">
+                Email Address <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <MdEmail className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="email"
+                  value={data.email}
+                  onChange={(e) => onChange({ ...data, email: e.target.value })}
+                  placeholder="john@example.com"
+                  className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
+                />
+              </div>
+            </div>
+
+            {/* Phone Input */}
+            <div className="space-y-1.5">
+              <label className="block text-sm font-medium text-gray-700">Phone Number</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <MdPhone className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="tel"
+                  value={data.phone}
+                  onChange={(e) => onChange({ ...data, phone: e.target.value })}
+                  placeholder="+1 234 567 8900"
+                  className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
+                />
+              </div>
+            </div>
+
+            {/* Location Input */}
+            <div className="space-y-1.5">
+              <label className="block text-sm font-medium text-gray-700">Location</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <MdLocationOn className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="text"
+                  value={data.location}
+                  onChange={(e) => onChange({ ...data, location: e.target.value })}
+                  placeholder="City, Country"
+                  className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
+                />
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Email, Phone, and Location */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
-              Email
-            </label>
-            <input
-              type="email"
-              value={data.email}
-              onChange={(e) => onChange({ ...data, email: e.target.value })}
-              placeholder="john@example.com"
-              className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
-              Phone Number
-            </label>
-            <input
-              type="tel"
-              value={data.phone}
-              onChange={(e) => onChange({ ...data, phone: e.target.value })}
-              placeholder="+1 234 567 8900"
-              className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
-              Location
-            </label>
-            <input
-              type="text"
-              value={data.location}
-              onChange={(e) => onChange({ ...data, location: e.target.value })}
-              placeholder="Bhopal, India"
-              className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-        </div>
-
-        {/* Portfolio and Social Links */}
+        {/* Social Links Section */}
         <div className="space-y-4">
-          <h3 className="text-sm font-medium text-gray-700">Links</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Portfolio Website
-              </label>
-              <input
-                type="url"
-                value={data.portfolio}
-                onChange={(e) => onChange({ ...data, portfolio: e.target.value })}
-                placeholder="https://yourportfolio.com"
-                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-medium text-gray-900">Social Links</h3>
+            <span className="text-xs text-gray-500">Optional</span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Portfolio Input */}
+            <div className="space-y-1.5">
+              <label className="block text-sm font-medium text-gray-700">Portfolio Website</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FaGlobe className="h-4 w-4 text-gray-400" />
+                </div>
+                <input
+                  type="url"
+                  value={data.portfolio}
+                  onChange={(e) => onChange({ ...data, portfolio: e.target.value })}
+                  placeholder="https://yourportfolio.com"
+                  className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
+                />
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
-                GitHub
-              </label>
-              <input
-                type="url"
-                value={data.github}
-                onChange={(e) => onChange({ ...data, github: e.target.value })}
-                placeholder="https://github.com/username"
-                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
+            {/* GitHub Input */}
+            <div className="space-y-1.5">
+              <label className="block text-sm font-medium text-gray-700">GitHub Profile</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FaGithub className="h-4 w-4 text-gray-400" />
+                </div>
+                <input
+                  type="url"
+                  value={data.github}
+                  onChange={(e) => onChange({ ...data, github: e.target.value })}
+                  placeholder="https://github.com/username"
+                  className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
+                />
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
-                LinkedIn
-              </label>
-              <input
-                type="url"
-                value={data.linkedin}
-                onChange={(e) => onChange({ ...data, linkedin: e.target.value })}
-                placeholder="https://linkedin.com/in/username"
-                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
+            {/* LinkedIn Input */}
+            <div className="space-y-1.5">
+              <label className="block text-sm font-medium text-gray-700">LinkedIn Profile</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FaLinkedin className="h-4 w-4 text-gray-400" />
+                </div>
+                <input
+                  type="url"
+                  value={data.linkedin}
+                  onChange={(e) => onChange({ ...data, linkedin: e.target.value })}
+                  placeholder="https://linkedin.com/in/username"
+                  className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
+                />
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Twitter
-              </label>
-              <input
-                type="url"
-                value={data.twitter}
-                onChange={(e) => onChange({ ...data, twitter: e.target.value })}
-                placeholder="https://twitter.com/username"
-                className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
+            {/* Twitter Input */}
+            <div className="space-y-1.5">
+              <label className="block text-sm font-medium text-gray-700">Twitter Profile</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FaTwitter className="h-4 w-4 text-gray-400" />
+                </div>
+                <input
+                  type="url"
+                  value={data.twitter}
+                  onChange={(e) => onChange({ ...data, twitter: e.target.value })}
+                  placeholder="https://twitter.com/username"
+                  className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </SectionWrapper>
+    </div>
   );
 }
