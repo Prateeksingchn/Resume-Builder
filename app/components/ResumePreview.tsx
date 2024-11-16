@@ -13,6 +13,28 @@ interface Project {
   techStack?: string;
 }
 
+interface Education {
+  id: string;
+  school: string;
+  degree: string;
+  field?: string;
+  location?: string;
+  startDate: string;
+  endDate: string;
+  gpa?: string;
+  coursework?: string;
+}
+
+interface Experience {
+  id: string;
+  position: string;
+  company: string;
+  location: string;
+  startDate: string;
+  endDate?: string;
+  description: string;
+}
+
 interface PreviewProps {
   personalInfo: {
     name: string;
@@ -26,8 +48,8 @@ interface PreviewProps {
     linkedin: string;
   };
   profileSummary: string;
-  education: any[];
-  experience: any[];
+  education: Education[];
+  experience: Experience[];
   skills: any[];
   certifications: any[];
   projects: Project[];
@@ -50,25 +72,36 @@ export default function ResumePreview({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-lg p-8 sticky top-8 max-h-[calc(100vh-4rem)] overflow-y-auto font-sans">
-      {/* Personal Information */}
-      <div className="text-center mb-4">
-        <h1 className="text-3xl font-bold text-gray-900">{personalInfo.name || 'Your Name'}</h1>
+    <main className="bg-white rounded-lg shadow-lg p-8 sticky top-8 max-h-[calc(100vh-4rem)] overflow-y-auto font-['Arial']">
+      <header className="text-center mb-4">
+        <h1 className="text-[26px] font-semibold text-gray-900 tracking-wide">
+          {personalInfo.name || 'Your Name'}
+        </h1>
         {personalInfo.designation && (
-          <h2 className="text-lg text-gray-800 font-medium mt-0 mb-0">{personalInfo.designation}</h2>
+          <h2 className="text-[15px] text-gray-700 font-medium tracking-wide">
+            {personalInfo.designation}
+          </h2>
         )}
-        <div className="flex justify-center items-center gap-4 mt-1 text-sm flex-wrap">
+        
+        {/* Contact Info */}
+        <div className="flex justify-center items-center gap-3 mt-1 text-[12px] flex-wrap">
           {personalInfo.phone && (
-            <span className="flex items-center gap-1 text-black">
-              <MdPhone className="w-4 h-4" />
+            <a 
+              href={`tel:${personalInfo.phone.replace(/\D/g, '')}`}
+              className="flex items-center gap-1"
+            >
+              <MdPhone className="w-3 h-3" />
               {personalInfo.phone}
-            </span>
+            </a>
           )}
           {personalInfo.email && (
-            <span className="flex items-center gap-1 text-black">
+            <a 
+              href={`mailto:${personalInfo.email}`}
+              className="flex items-center gap-1 text-black hover:text-gray-600"
+            >
               <MdEmail className="w-4 h-4" />
               {personalInfo.email}
-            </span>
+            </a>
           )}
           {personalInfo.location && (
             <span className="flex items-center gap-1 text-black">
@@ -77,7 +110,7 @@ export default function ResumePreview({
             </span>
           )}
         </div>
-        <div className="flex justify-center gap-8 mt-2 text-sm">
+        <div className="flex justify-center gap-4 mt-1 text-[12px]">
           {personalInfo.twitter && (
             <a 
               href={personalInfo.twitter}
@@ -85,7 +118,7 @@ export default function ResumePreview({
               target="_blank"
               rel="noopener noreferrer"
             >
-              <FaTwitter className="w-4 h-4" />
+              <FaTwitter className="w-3 h-3" />
               <span className="border-b border-black">Twitter</span>
             </a>
           )}
@@ -123,121 +156,137 @@ export default function ResumePreview({
             </a>
           )}
         </div>
-      </div>
+      </header>
 
-      {/* Profile Summary */}
-      <div className="mb-3">
-        <h2 className="text-lg font-bold border-b border-gray-300 mb-2">Profile Summary</h2>
-        <p className="text-sm text-gray-700">
+      <section className="mb-2">
+        <h2 className="text-[14px] font-normal border-b border-gray-300 mb-1">Profile Summary</h2>
+        <p className="text-[12px] text-gray-700 leading-4">
           {profileSummary}
         </p>
-      </div>
+      </section>
 
       {/* Experience Section */}
       {experience.length > 0 && (
-        <div className="mb-3">
-          <h2 className="text-lg font-bold border-b border-gray-300 mb-2">Experience</h2>
-          <div className="space-y-4">
+        <section className="mb-2">
+          <h2 className="text-[14px] font-normal border-b border-gray-300 mb-1">Experience</h2>
+          <div className="space-y-2">
             {experience.map((exp) => (
-              <div key={exp.id} className="text-sm">
+              <div key={exp.id} className="text-[12px]">
                 <div className="flex justify-between items-start">
                   <div>
-                    <div className="text-base font-semibold">{exp.position}</div>
-                    <div>{exp.company} - {exp.location}</div>
+                    <div className="text-[13px] font-medium">{exp.position}</div>
+                    <div className="text-[12px]">{exp.company} - {exp.location}</div>
                   </div>
-                  <div className="text-sm text-gray-600">
+                  <div className="text-[12px] text-gray-600">
                     {formatDate(exp.startDate)} - {exp.endDate ? formatDate(exp.endDate) : 'Present'}
                   </div>
                 </div>
-                <ul className="list-disc pl-5 mt-2 space-y-0.5">
-                  {exp.description.split('\n').filter(line => line.trim()).map((desc, index) => (
+                <ul className="list-disc pl-4 mt-0.5 space-y-0.5 leading-4">
+                  {exp.description.split('\n').filter(Boolean).map((desc, index) => (
                     <li key={index} className="text-gray-700">{desc.trim()}</li>
                   ))}
                 </ul>
               </div>
             ))}
           </div>
-        </div>
+        </section>
       )}
 
       {/* Education Section */}
       {education.length > 0 && (
-        <div className="mb-3">
-          <h2 className="text-lg font-bold border-b border-gray-300 mb-2">Education</h2>
-          <div className="space-y-4">
+        <section className="mb-2">
+          <h2 className="text-[14px] font-normal border-b border-gray-300 mb-1">Education</h2>
+          <div className="space-y-2">
             {education.map((edu) => (
-              <div key={edu.id} className="text-sm">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <div className="text-base font-semibold">{edu.school}</div>
-                    <div>{edu.degree} in {edu.field}</div>
-                    {edu.gpa && <div>GPA: {edu.gpa}</div>}
+              <div key={edu.id} className="text-[12px] grid grid-cols-[1fr_auto] gap-x-4">
+                <div>
+                  <div className="font-semibold text-gray-900">{edu.school}</div>
+                  <div className="font-medium text-gray-800">
+                    {edu.degree} {edu.field && `• ${edu.field}`}
+                    {edu.gpa && <span className="text-gray-700"> (GPA: {edu.gpa})</span>}
                   </div>
-                  <div className="text-sm text-gray-600">
-                    {formatDate(edu.startDate)} - {formatDate(edu.endDate)}
-                  </div>
+                  {edu.location && (
+                    <div className="text-gray-700">
+                      {edu.location}
+                    </div>
+                  )}
+                  {edu.coursework && (
+                    <div className="text-gray-700 mt-0.5 leading-4">
+                      <span className="font-medium">Relevant Coursework: </span>
+                      {edu.coursework}
+                    </div>
+                  )}
+                </div>
+                <div className="text-right text-gray-600 whitespace-nowrap">
+                  {formatDate(edu.startDate)} - {formatDate(edu.endDate)}
                 </div>
               </div>
             ))}
           </div>
-        </div>
+        </section>
       )}
 
       {/* Projects Section */}
       {projects.length > 0 && (
-        <div className="mb-4">
-          <h2 className="text-lg font-bold border-b border-gray-300 mb-2">Projects</h2>
-          <div className="space-y-3">
+        <section className="mb-2">
+          <h2 className="text-[14px] font-normal border-b border-gray-300 mb-1">Projects</h2>
+          <div className="space-y-2">
             {projects.map((proj) => (
-              <div key={proj.id} className="text-sm">
-                <div className="flex items-center gap-2 mb-1">
-                  <a 
-                    href={proj.url}
-                    className="text-black hover:text-gray-600 inline-flex items-center"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <span className="font-medium">{proj.name}</span>
-                    <FaLink className="w-3 h-3 ml-1 mt-[2px]" />
-                  </a>
-                  {proj.techStack && (
-                    <>
-                      <span className="text-gray-400">|</span>
-                      <span className="text-gray-700">
-                        {proj.techStack}
-                      </span>
-                      <span className="text-gray-400">|</span>
-                    </>
-                  )}
-                  {proj.sourceCode && (
+              <div key={proj.id} className="text-[12px]">
+                {/* Project Name and Links - First Line */}
+                <div className="flex items-center gap-2 mb-0.5">
+                  <span className="font-semibold">{proj.name}</span>
+                  {proj.url && (
                     <a 
-                      href={proj.sourceCode}
+                      href={proj.url}
                       className="text-black hover:text-gray-600 inline-flex items-center"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <FaGithub className="w-4 h-4 mr-1" />
-                      Source Code
+                      <FaLink className="w-2.5 h-2.5" />
+                    </a>
+                  )}
+                  <span className="text-gray-400">|</span>
+                  {proj.sourceCode && (
+                    <a 
+                      href={proj.sourceCode}
+                      className="text-black hover:text-gray-600 inline-flex items-center gap-1"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <FaGithub className="w-3 h-3" />
+                      <span>Source</span>
                     </a>
                   )}
                 </div>
+
+                {/* Tech Stack - Always on Second Line */}
+                {proj.techStack && (
+                  <div className="text-gray-700 mb-0.5 leading-4">
+                    {proj.techStack}
+                  </div>
+                )}
                 
-                <ul className="list-disc ml-4 text-sm space-y-0.5">
-                  {proj.description.split('\n').filter(line => line.trim()).map((desc, index) => (
-                    <li key={index} className="text-gray-700">{desc.trim()}</li>
-                  ))}
+                {/* Project Description */}
+                <ul className="list-disc ml-4 space-y-0.5 leading-4">
+                  {proj.description.split('\n')
+                    .filter(line => line.trim())
+                    .map((desc, index) => (
+                      <li key={index} className="text-gray-700">{desc.trim()}</li>
+                    ))
+                  }
                 </ul>
               </div>
             ))}
           </div>
-        </div>
+        </section>
       )}
 
       {/* Skills Section */}
       {skills.length > 0 && (
-        <div className="mb-4">
-          <h2 className="text-lg font-bold border-b border-gray-300 mb-2">Skills</h2>
-          <div className="space-y-1">
+        <section className="mb-2">
+          <h2 className="text-[14px] font-semibold border-b border-gray-300 mb-1">Skills</h2>
+          <div className="space-y-0.5">
             {Object.entries(
               skills.reduce((acc, skill) => {
                 if (!acc[skill.category]) {
@@ -247,7 +296,7 @@ export default function ResumePreview({
                 return acc;
               }, {} as Record<string, typeof skills>)
             ).map(([category, categorySkills]) => (
-              <div key={category} className="text-sm">
+              <div key={category} className="text-[12px] leading-4">
                 <span className="font-medium">{category}:</span>{' '}
                 <span className="text-gray-700">
                   {categorySkills.map((skill, index) => (
@@ -260,16 +309,16 @@ export default function ResumePreview({
               </div>
             ))}
           </div>
-        </div>
+        </section>
       )}
 
       {/* Certifications Section */}
       {certifications.length > 0 && (
-        <div className="mb-6">
-          <h2 className="text-lg font-bold border-b border-gray-300 mb-2">Certifications</h2>
-          <div className="space-y-2">
+        <section className="mb-2">
+          <h2 className="text-[14px] font-semibold border-b border-gray-300 mb-1">Certifications</h2>
+          <div className="space-y-1">
             {certifications.map((cert) => (
-              <div key={cert.id} className="text-sm">
+              <div key={cert.id} className="text-[12px]">
                 <div className="flex justify-between items-start">
                   <div>
                     <div className="font-medium">
@@ -288,15 +337,15 @@ export default function ResumePreview({
                     </div>
                     <div className="text-gray-600">{cert.issuer}</div>
                   </div>
-                  <div className="text-sm text-gray-600">
+                  <div className="text-gray-600">
                     {formatDate(cert.date)}
                   </div>
                 </div>
               </div>
             ))}
           </div>
-        </div>
+        </section>
       )}
-    </div>
+    </main>
   );
 }

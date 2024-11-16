@@ -19,6 +19,20 @@ interface ProjectsSectionProps {
 }
 
 export default function ProjectsSection({ projects, onChange }: ProjectsSectionProps) {
+  const [collapsedProjects, setCollapsedProjects] = React.useState<Set<string>>(new Set());
+
+  const toggleCollapse = (id: string) => {
+    setCollapsedProjects(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
+
   const addProject = () => {
     onChange([
       ...projects,
@@ -76,20 +90,32 @@ export default function ProjectsSection({ projects, onChange }: ProjectsSectionP
             {/* Project Entry Header */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="bg-blue-50 p-2 rounded-lg">
-                  <MdCode className="w-5 h-5 text-blue-600" />
-                </div>
-                <h3 className="font-medium text-gray-900">Project #{index + 1}</h3>
+                <button
+                  onClick={() => toggleCollapse(proj.id)}
+                  className="bg-blue-50 p-2 rounded-lg hover:bg-blue-100 transition-colors"
+                >
+                  <MdCode className={`w-5 h-5 text-blue-600 transition-transform duration-200 ${
+                    collapsedProjects.has(proj.id) ? 'rotate-90' : ''
+                  }`} />
+                </button>
+                <h3 className="font-medium text-gray-900">
+                  {proj.name || `Project #${index + 1}`}
+                </h3>
               </div>
-              <button
-                onClick={() => removeProject(proj.id)}
-                className="text-gray-400 hover:text-red-500 transition-colors p-2 hover:bg-red-50 rounded-lg group"
-              >
-                <MdDelete className="w-5 h-5" />
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => removeProject(proj.id)}
+                  className="text-gray-400 hover:text-red-500 transition-colors p-2 hover:bg-red-50 rounded-lg"
+                >
+                  <MdDelete className="w-5 h-5" />
+                </button>
+              </div>
             </div>
 
-            <div className="space-y-6">
+            {/* Collapsible Content */}
+            <div className={`space-y-6 transition-all duration-200 ${
+              collapsedProjects.has(proj.id) ? 'hidden' : ''
+            }`}>
               {/* Project Name */}
               <div className="space-y-1.5">
                 <label className="block text-sm font-medium text-gray-700">

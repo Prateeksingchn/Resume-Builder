@@ -10,6 +10,7 @@ import CertificationsSection from './components/Certifications';
 import ProjectsSection from './components/Projects';
 import ResumePreview from './components/ResumePreview';
 import { HiChevronRight, HiDownload, HiUser, HiDocumentText, HiBriefcase, HiAcademicCap, HiCode, HiCollection, HiBadgeCheck } from 'react-icons/hi';
+import html2pdf from 'html2pdf.js';
 
 // Navigation items with icons
 const navigationItems = [
@@ -43,6 +44,9 @@ export default function Home() {
   const [projects, setProjects] = useState<any[]>([]);
   const [activeSection, setActiveSection] = useState('personal');
 
+  // Add loading state
+  const [isDownloading, setIsDownloading] = useState(false);
+
   // Calculate progress
   const calculateProgress = () => {
     const sections = {
@@ -61,6 +65,36 @@ export default function Home() {
 
   const progress = calculateProgress();
 
+  // Update the handleDownloadPDF function
+  const handleDownloadPDF = async () => {
+    setIsDownloading(true);
+    const element = document.getElementById('resume-preview');
+    const opt = {
+      margin: [10, 10],
+      filename: `${personalInfo.name || 'Resume'}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { 
+        scale: 2,
+        useCORS: true,
+        letterRendering: true
+      },
+      jsPDF: { 
+        unit: 'mm', 
+        format: 'a4', 
+        orientation: 'portrait' 
+      }
+    };
+
+    try {
+      await html2pdf().set(opt).from(element).save();
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      // You might want to add a toast notification here
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Top Bar */}
@@ -70,9 +104,28 @@ export default function Home() {
             <h1 className="text-xl font-semibold text-gray-900">Resume Builder</h1>
             <span className="text-sm text-gray-500">v1.0</span>
           </div>
-          <button className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-sm">
-            <HiDownload className="w-4 h-4" />
-            Download PDF
+          <button 
+            id="download-btn"
+            onClick={handleDownloadPDF}
+            disabled={isDownloading}
+            className={`inline-flex items-center gap-2 px-4 py-2 ${
+              isDownloading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'
+            } text-white rounded-lg transition-colors duration-200 shadow-sm`}
+          >
+            {isDownloading ? (
+              <>
+                <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Generating...
+              </>
+            ) : (
+              <>
+                <HiDownload className="w-4 h-4" />
+                Download PDF
+              </>
+            )}
           </button>
         </div>
       </div>
@@ -193,7 +246,7 @@ export default function Home() {
           {/* Right Section - Preview */}
           <div className="col-span-5">
             <div className="sticky top-24">
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+              <div id="resume-preview" className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 <ResumePreview
                   personalInfo={personalInfo}
                   profileSummary={profileSummary}
