@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PersonalInfo from './components/PersonalInfo';
 import ProfileSummary from './components/ProfileSummary';
 import EducationSection from './components/Education';
@@ -18,34 +18,70 @@ const navigationItems = [
   { id: 'summary', name: 'Profile Summary', icon: HiDocumentText },
   { id: 'education', name: 'Education', icon: HiAcademicCap },
   { id: 'experience', name: 'Experience', icon: HiBriefcase },
-  { id: 'skills', name: 'Skills', icon: HiCode },
   { id: 'projects', name: 'Projects', icon: HiCollection },
+  { id: 'skills', name: 'Skills', icon: HiCode },
   { id: 'certifications', name: 'Certifications', icon: HiBadgeCheck },
 ];
 
 export default function Home() {
-  const [personalInfo, setPersonalInfo] = useState({
-    name: '',
-    designation: '',
-    email: '',
-    phone: '',
-    location: '',
-    portfolio: '',
-    github: '',
-    twitter: '',
-    linkedin: '',
+  const [personalInfo, setPersonalInfo] = useState(() => {
+    const saved = localStorage.getItem('personalInfo');
+    return saved ? JSON.parse(saved) : {
+      name: '',
+      designation: '',
+      email: '',
+      phone: '',
+      location: '',
+      portfolio: '',
+      github: '',
+      twitter: '',
+      linkedin: '',
+    };
   });
 
-  const [profileSummary, setProfileSummary] = useState('');
-  const [education, setEducation] = useState<any[]>([]);
-  const [experience, setExperience] = useState<any[]>([]);
-  const [skills, setSkills] = useState<any[]>([]);
-  const [certifications, setCertifications] = useState<any[]>([]);
-  const [projects, setProjects] = useState<any[]>([]);
+  const [profileSummary, setProfileSummary] = useState(() => {
+    const saved = localStorage.getItem('profileSummary');
+    return saved ? JSON.parse(saved) : '';
+  });
+  
+  const [education, setEducation] = useState<any[]>(() => {
+    const saved = localStorage.getItem('education');
+    return saved ? JSON.parse(saved) : [];
+  });
+  
+  const [experience, setExperience] = useState<any[]>(() => {
+    const saved = localStorage.getItem('experience');
+    return saved ? JSON.parse(saved) : [];
+  });
+  
+  const [skills, setSkills] = useState<any[]>(() => {
+    const saved = localStorage.getItem('skills');
+    return saved ? JSON.parse(saved) : [];
+  });
+  
+  const [certifications, setCertifications] = useState<any[]>(() => {
+    const saved = localStorage.getItem('certifications');
+    return saved ? JSON.parse(saved) : [];
+  });
+  
+  const [projects, setProjects] = useState<any[]>(() => {
+    const saved = localStorage.getItem('projects');
+    return saved ? JSON.parse(saved) : [];
+  });
+  
   const [activeSection, setActiveSection] = useState('personal');
-
-  // Add loading state
   const [isDownloading, setIsDownloading] = useState(false);
+
+  // Save data to local storage whenever any state changes
+  useEffect(() => {
+    localStorage.setItem('personalInfo', JSON.stringify(personalInfo));
+    localStorage.setItem('profileSummary', JSON.stringify(profileSummary));
+    localStorage.setItem('education', JSON.stringify(education));
+    localStorage.setItem('experience', JSON.stringify(experience));
+    localStorage.setItem('skills', JSON.stringify(skills));
+    localStorage.setItem('certifications', JSON.stringify(certifications));
+    localStorage.setItem('projects', JSON.stringify(projects));
+  }, [personalInfo, profileSummary, education, experience, skills, certifications, projects]);
 
   // Calculate progress
   const calculateProgress = () => {
