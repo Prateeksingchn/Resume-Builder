@@ -133,24 +133,27 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Top Bar */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-50">
+      {/* Modern Top Bar */}
+      <div className="bg-white shadow-md sticky top-0 z-50">
         <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-semibold text-gray-900">Resume Builder</h1>
+          <div className="flex items-center gap-4">
+            <h1 className="text-2xl font-bold text-gray-900">Resume Builder</h1>
             <span className="text-sm text-gray-500">v1.0</span>
+          </div>
+          <div className="text-sm text-gray-600">
+            <span className="font-medium">ATS-Friendly Resumes</span>
           </div>
           <button 
             id="download-btn"
             onClick={handleDownloadPDF}
             disabled={isDownloading}
-            className={`inline-flex items-center gap-2 px-4 py-2 ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors duration-200 ${
               isDownloading ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'
-            } text-white rounded-lg transition-colors duration-200 shadow-sm`}
+            } text-white font-semibold shadow-md`}
           >
             {isDownloading ? (
               <>
-                <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
@@ -166,6 +169,7 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Main Content */}
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-4 py-8">
         <div className="grid grid-cols-12 gap-4">
           {/* Left Sidebar */}
