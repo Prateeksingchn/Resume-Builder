@@ -110,23 +110,26 @@ export default function ResumePreview({
   };
 
   return (
-    <main className="bg-white rounded-lg shadow-lg p-8 sticky top-8 max-h-[calc(100vh-4rem)] overflow-y-auto font-['Arial']">
-      <header className="text-center mb-4">
-        <h1 className="text-[26px] font-semibold text-gray-900 tracking-wide">
-          {resumeData.personalInfo.name || 'Your Name'}
+    <main className="font-['Arial'] w-full" style={{ 
+        fontSize: '12px',
+        lineHeight: '1.2',
+        color: '#000000'
+    }}>
+      {/* Header Section */}
+      <header className="text-center mb-6">
+        <h1 className="text-[24px] font-bold mb-1" style={{ color: '#000000' }}>
+          {resumeData.personalInfo.name}
         </h1>
-        {resumeData.personalInfo.designation && (
-          <h2 className="text-[15px] text-gray-700 font-medium tracking-wide">
-            {resumeData.personalInfo.designation}
-          </h2>
-        )}
+        <h2 className="text-[16px] mb-2" style={{ color: '#000000' }}>
+          {resumeData.personalInfo.designation}
+        </h2>
         
-        {/* Contact Info */}
-        <div className="flex justify-center items-center gap-3 mt-1 text-[12px] flex-wrap">
+        {/* Contact Info - Adjusted spacing */}
+        <div className="flex justify-center items-center gap-4 mb-2 text-[12px] flex-wrap">
           {resumeData.personalInfo.phone && (
             <a 
               href={`tel:${resumeData.personalInfo.phone.replace(/\D/g, '')}`}
-              className="flex items-center gap-1"
+              className="flex items-center gap-1 no-underline text-black"
             >
               <MdPhone className="w-3 h-3" />
               {resumeData.personalInfo.phone}
@@ -148,7 +151,9 @@ export default function ResumePreview({
             </span>
           )}
         </div>
-        <div className="flex justify-center gap-4 mt-1 text-[12px]">
+        
+        {/* Social Links - Adjusted spacing */}
+        <div className="flex justify-center gap-6 text-[12px]">
           {resumeData.personalInfo.twitter && (
             <a 
               href={resumeData.personalInfo.twitter}
@@ -196,21 +201,22 @@ export default function ResumePreview({
         </div>
       </header>
 
+      {/* Profile Summary - Adjusted margins */}
       <section className="mb-2">
-        <h2 className="text-[14px] font-normal border-b border-gray-300 mb-1">Profile Summary</h2>
-        <p className="text-[12px] text-gray-700 leading-4">
+        <h2 className="text-[14px] font-semibold border-b border-gray-300 pb-1 mb-2">Profile Summary</h2>
+        <p className="text-[12px] text-gray-700 leading-5">
           {resumeData.profileSummary}
         </p>
       </section>
 
-      {/* Experience Section */}
+      {/* Experience Section - Adjusted spacing */}
       {resumeData.experience.length > 0 && (
         <section className="mb-2">
-          <h2 className="text-[14px] font-normal border-b border-gray-300 mb-1">Experience</h2>
-          <div className="space-y-2">
+          <h2 className="text-[14px] font-semibold border-b border-gray-300 pb-1 mb-2">Experience</h2>
+          <div className="space-y-3">
             {resumeData.experience.map((exp) => (
               <div key={exp.id} className="text-[12px]">
-                <div className="flex justify-between items-start">
+                <div className="flex justify-between items-start mb-1">
                   <div>
                     <div className="text-[13px] font-medium">{exp.position}</div>
                     <div className="text-[12px]">{exp.company} - {exp.location}</div>
@@ -233,7 +239,7 @@ export default function ResumePreview({
       {/* Education Section */}
       {resumeData.education.length > 0 && (
         <section className="mb-2">
-          <h2 className="text-[14px] font-normal border-b border-gray-300 mb-1">Education</h2>
+          <h2 className="text-[14px] font-semibold border-b border-gray-300 mb-1">Education</h2>
           <div className="space-y-2">
             {resumeData.education.map((edu) => (
               <div key={edu.id} className="text-[12px] grid grid-cols-[1fr_auto] gap-x-4">
@@ -264,10 +270,10 @@ export default function ResumePreview({
         </section>
       )}
 
-      {/* Projects Section */}
+      {/* Projects Section - Adjusted spacing */}
       {resumeData.projects.length > 0 && (
         <section className="mb-2">
-          <h2 className="text-[14px] font-normal border-b border-gray-300 mb-1">Projects</h2>
+          <h2 className="text-[14px] font-semibold border-b border-gray-300 pb-1 mb-2">Projects</h2>
           <div className="space-y-2">
             {resumeData.projects.map((proj) => (
               <div key={proj.id} className="text-[12px]">
@@ -320,11 +326,11 @@ export default function ResumePreview({
         </section>
       )}
 
-      {/* Skills Section */}
+      {/* Skills Section - Adjusted spacing */}
       {resumeData.skills.length > 0 && (
         <section className="mb-2">
-          <h2 className="text-[14px] font-semibold border-b border-gray-300 mb-1">Skills</h2>
-          <div className="space-y-0.5">
+          <h2 className="text-[14px] font-semibold border-b border-gray-300 pb-1 mb-2">Skills</h2>
+          <div className="space-y-1">
             {Object.entries(
               resumeData.skills.reduce((acc, skill) => {
                 if (!acc[skill.category]) {

@@ -135,3 +135,15 @@ body {
   @apply bg-blue-600 !important;
   @apply text-white !important;
 }
+
+@page {
+    size: A4;
+    margin: 0;
+}
+
+@media print {
+    body {
+        margin: 0;
+        padding: 0;
+    }
+}

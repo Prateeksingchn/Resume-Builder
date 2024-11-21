@@ -10,6 +10,8 @@ import CertificationsSection from './components/Certifications';
 import ProjectsSection from './components/Projects';
 import ResumePreview from './components/ResumePreview';
 import { HiChevronRight, HiDownload, HiUser, HiDocumentText, HiBriefcase, HiAcademicCap, HiCode, HiCollection, HiBadgeCheck } from 'react-icons/hi';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import html2pdf from 'html2pdf.js';
 
 // Navigation items with icons
@@ -105,29 +107,95 @@ export default function Home() {
   const handleDownloadPDF = async () => {
     setIsDownloading(true);
     const element = document.getElementById('resume-preview');
-    const opt = {
-      margin: [10, 10],
-      filename: `${personalInfo.name || 'Resume'}.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { 
-        scale: 2,
-        useCORS: true,
-        letterRendering: true
-      },
-      jsPDF: { 
-        unit: 'mm', 
-        format: 'a4', 
-        orientation: 'portrait' 
-      }
-    };
+
+    if (!element) return;
 
     try {
-      await html2pdf().set(opt).from(element).save();
+        // Create a clone with preserved styling
+        const clone = element.cloneNode(true) as HTMLElement;
+        
+        // Apply specific styles to ensure proper alignment
+        Object.assign(clone.style, {
+            transform: 'none',
+            width: '210mm',
+            height: '297mm',
+            padding: '20mm',
+            position: 'absolute',
+            left: '-9999px',
+            top: 0,
+            backgroundColor: 'white',
+            boxSizing: 'border-box'
+        });
+
+        // Preserve all CSS styles
+        const styles = document.styleSheets;
+        const styleSheet = document.createElement('style');
+        Array.from(styles).forEach(sheet => {
+            try {
+                const cssRules = Array.from(sheet.cssRules || []);
+                cssRules.forEach(rule => {
+                    styleSheet.textContent += rule.cssText;
+                });
+            } catch (e) {
+                console.warn('Could not access stylesheet rules');
+            }
+        });
+        clone.appendChild(styleSheet);
+
+        document.body.appendChild(clone);
+
+        // Capture with html2canvas
+        const canvas = await html2canvas(clone, {
+            scale: 4,
+            useCORS: true,
+            logging: true,
+            width: clone.offsetWidth,
+            height: clone.offsetHeight,
+            backgroundColor: '#ffffff',
+            imageTimeout: 0,
+            letterRendering: true,
+            allowTaint: true,
+            onclone: (clonedDoc) => {
+                const clonedElement = clonedDoc.getElementById('resume-preview');
+                if (clonedElement) {
+                    // Ensure all Tailwind classes are properly applied
+                    clonedElement.querySelectorAll('*').forEach(el => {
+                        if (el instanceof HTMLElement) {
+                            const computedStyle = window.getComputedStyle(el);
+                            Object.assign(el.style, {
+                                display: computedStyle.display,
+                                margin: computedStyle.margin,
+                                padding: computedStyle.padding,
+                                fontSize: computedStyle.fontSize,
+                                fontWeight: computedStyle.fontWeight,
+                                lineHeight: computedStyle.lineHeight,
+                                textAlign: computedStyle.textAlign,
+                                color: computedStyle.color,
+                                backgroundColor: computedStyle.backgroundColor,
+                            });
+                        }
+                    });
+                }
+            }
+        });
+
+        document.body.removeChild(clone);
+
+        // Create PDF
+        const pdf = new jsPDF({
+            format: 'a4',
+            unit: 'mm',
+            orientation: 'portrait'
+        });
+
+        const imgData = canvas.toDataURL('image/jpeg', 1.0);
+        pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297, '', 'FAST');
+        pdf.save(`${personalInfo.name || 'Resume'}.pdf`);
+
     } catch (error) {
-      console.error('Error generating PDF:', error);
-      // You might want to add a toast notification here
+        console.error('Error generating PDF:', error);
     } finally {
-      setIsDownloading(false);
+        setIsDownloading(false);
     }
   };
 
@@ -285,18 +353,39 @@ export default function Home() {
 
           {/* Right Section - Preview */}
           <div className="col-span-5">
-            <div className="sticky top-24">
-              <div id="resume-preview" className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <ResumePreview
-                  personalInfo={personalInfo}
-                  profileSummary={profileSummary}
-                  education={education}
-                  experience={experience}
-                  skills={skills}
-                  certifications={certifications}
-                  projects={projects}
-                />
-              </div>
+            <div className="sticky top-24 overflow-hidden bg-gray-100 rounded-lg p-4">
+                <div 
+                    className="transform scale-[0.6] origin-top-left"
+                    style={{
+                        width: 'fit-content',
+                        minHeight: 'fit-content',
+                        marginLeft: '50px',
+                        position: 'relative',
+                        top: '0',
+                    }}
+                >
+                    <div 
+                        id="resume-preview" 
+                        className="bg-white shadow-xl border border-gray-200"
+                        style={{
+                            width: '210mm',
+                            minHeight: '297mm',
+                            padding: '10mm',
+                            boxSizing: 'border-box',
+                            backgroundColor: 'white',
+                        }}
+                    >
+                        <ResumePreview
+                            personalInfo={personalInfo}
+                            profileSummary={profileSummary}
+                            education={education}
+                            experience={experience}
+                            skills={skills}
+                            certifications={certifications}
+                            projects={projects}
+                        />
+                    </div>
+                </div>
             </div>
           </div>
         </div>
