@@ -39,6 +39,26 @@ export default function SkillsSection({ skills, onChange }: SkillsSectionProps) 
     { name: 'Other', color: 'bg-gray-100 text-gray-600' },
   ];
 
+  // Demo skills stack
+  const demoSkills = [
+    { id: '1', name: 'React', category: 'Frontend Development' },
+    { id: '2', name: 'Node.js', category: 'Backend Development' },
+    { id: '3', name: 'PostgreSQL', category: 'Databases' },
+    { id: '4', name: 'AWS', category: 'Cloud Services' },
+  ];
+
+  // Add demo skills to the initial skills
+  const initialSkills = [...demoSkills, ...skills];
+
+  // Update the groupedSkills to use initialSkills
+  const groupedSkills = initialSkills.reduce((acc, skill) => {
+    if (!acc[skill.category]) {
+      acc[skill.category] = [];
+    }
+    acc[skill.category].push(skill);
+    return acc;
+  }, {} as Record<string, Skill[]>);
+
   const addSkill = () => {
     if (newSkill.trim()) {
       const category = showCustomCategory ? customCategory : selectedCategory;
@@ -59,15 +79,6 @@ export default function SkillsSection({ skills, onChange }: SkillsSectionProps) 
   const removeSkill = (id: string) => {
     onChange(skills.filter((skill) => skill.id !== id));
   };
-
-  // Group skills by category
-  const groupedSkills = skills.reduce((acc, skill) => {
-    if (!acc[skill.category]) {
-      acc[skill.category] = [];
-    }
-    acc[skill.category].push(skill);
-    return acc;
-  }, {} as Record<string, Skill[]>);
 
   return (
     <div>
