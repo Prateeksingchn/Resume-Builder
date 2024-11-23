@@ -10,9 +10,12 @@ import CertificationsSection from './components/Certifications';
 import ProjectsSection from './components/Projects';
 import ResumePreview from './components/ResumePreview';
 import { HiChevronRight, HiDownload, HiUser, HiDocumentText, HiBriefcase, HiAcademicCap, HiCode, HiCollection, HiBadgeCheck } from 'react-icons/hi';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+// import jsPDF from 'jspdf';
+// import html2canvas from 'html2canvas';
 import html2pdf from 'html2pdf.js';
+// Remove the unused imports:
+// import jsPDF from 'jspdf';
+// import html2canvas from 'html2canvas';
 
 // Navigation items with icons
 const navigationItems = [
@@ -107,95 +110,143 @@ export default function Home() {
   const handleDownloadPDF = async () => {
     setIsDownloading(true);
     const element = document.getElementById('resume-preview');
-
-    if (!element) return;
-
+    
+    if (!element) {
+      setIsDownloading(false);
+      return;
+    }
+  
     try {
-        // Create a clone with preserved styling
-        const clone = element.cloneNode(true) as HTMLElement;
-        
-        // Apply specific styles to ensure proper alignment
-        Object.assign(clone.style, {
-            transform: 'none',
-            width: '210mm',
-            height: '297mm',
-            padding: '20mm',
-            position: 'absolute',
-            left: '-9999px',
-            top: 0,
-            backgroundColor: 'white',
-            boxSizing: 'border-box'
+      // Create a deep clone of the resume preview
+      const clone = element.cloneNode(true) as HTMLElement;
+      
+      // Create a container with exact A4 dimensions
+      const container = document.createElement('div');
+      container.style.position = 'absolute';
+      container.style.left = '-9999px';
+      container.style.top = '0';
+      container.appendChild(clone);
+      
+      // Set exact A4 dimensions and styles
+      Object.assign(clone.style, {
+        width: '210mm',
+        minHeight: '297mm',
+        margin: '0',
+        padding: '10mm',
+        boxSizing: 'border-box',
+        border: 'none',
+        backgroundColor: 'white',
+        transform: 'none',
+        position: 'relative'
+      });
+  
+      // Fix icon alignment
+      const icons = clone.querySelectorAll('.react-icons');
+      icons.forEach(icon => {
+        Object.assign((icon as HTMLElement).style, {
+          display: 'inline-flex',
+          verticalAlign: 'middle',
+          alignItems: 'center',
+          marginRight: '4px'
         });
-
-        // Preserve all CSS styles
-        const styles = document.styleSheets;
-        const styleSheet = document.createElement('style');
-        Array.from(styles).forEach(sheet => {
-            try {
-                const cssRules = Array.from(sheet.cssRules || []);
-                cssRules.forEach(rule => {
-                    styleSheet.textContent += rule.cssText;
-                });
-            } catch (e) {
-                console.warn('Could not access stylesheet rules');
-            }
+      });
+  
+      // Ensure links with icons are properly aligned
+      const iconLinks = clone.querySelectorAll('a');
+      iconLinks.forEach(link => {
+        Object.assign((link as HTMLElement).style, {
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '4px'
         });
-        clone.appendChild(styleSheet);
-
-        document.body.appendChild(clone);
-
-        // Capture with html2canvas
-        const canvas = await html2canvas(clone, {
-            scale: 4,
-            useCORS: true,
-            logging: true,
-            width: clone.offsetWidth,
-            height: clone.offsetHeight,
-            backgroundColor: '#ffffff',
-            imageTimeout: 0,
-            letterRendering: true,
-            allowTaint: true,
-            onclone: (clonedDoc) => {
-                const clonedElement = clonedDoc.getElementById('resume-preview');
-                if (clonedElement) {
-                    // Ensure all Tailwind classes are properly applied
-                    clonedElement.querySelectorAll('*').forEach(el => {
-                        if (el instanceof HTMLElement) {
-                            const computedStyle = window.getComputedStyle(el);
-                            Object.assign(el.style, {
-                                display: computedStyle.display,
-                                margin: computedStyle.margin,
-                                padding: computedStyle.padding,
-                                fontSize: computedStyle.fontSize,
-                                fontWeight: computedStyle.fontWeight,
-                                lineHeight: computedStyle.lineHeight,
-                                textAlign: computedStyle.textAlign,
-                                color: computedStyle.color,
-                                backgroundColor: computedStyle.backgroundColor,
-                            });
-                        }
-                    });
-                }
-            }
-        });
-
-        document.body.removeChild(clone);
-
-        // Create PDF
-        const pdf = new jsPDF({
-            format: 'a4',
-            unit: 'mm',
-            orientation: 'portrait'
-        });
-
-        const imgData = canvas.toDataURL('image/jpeg', 1.0);
-        pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297, '', 'FAST');
-        pdf.save(`${personalInfo.name || 'Resume'}.pdf`);
-
+      });
+  
+      // Copy all styles
+      const styleSheets = document.styleSheets;
+      let styles = '';
+      for (let i = 0; i < styleSheets.length; i++) {
+        try {
+          const rules = styleSheets[i].cssRules || styleSheets[i].rules;
+          for (let j = 0; j < rules.length; j++) {
+            styles += rules[j].cssText + '\n';
+          }
+        } catch (e) {
+          console.warn('Could not access stylesheet rules');
+        }
+      }
+  
+      // Create and append a style element with additional fixes
+      const styleElement = document.createElement('style');
+      styleElement.textContent = `
+        ${styles}
+        @page {
+          size: A4;
+          margin: 0;
+        }
+        * {
+          -webkit-print-color-adjust: exact !important;
+          color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
+        .react-icons {
+          display: inline-flex !important;
+          vertical-align: middle !important;
+          align-items: center !important;
+          margin-right: 4px !important;
+        }
+        a {
+          display: inline-flex !important;
+          align-items: center !important;
+          gap: 4px !important;
+          text-decoration: none !important;
+        }
+        svg {
+          width: 1em !important;
+          height: 1em !important;
+        }
+      `;
+      clone.appendChild(styleElement);
+  
+      // Append to document
+      document.body.appendChild(container);
+  
+      // Force all fonts to load
+      await document.fonts.ready;
+  
+      // Generate PDF with better settings for multi-page support
+      const pdf = await html2pdf().set({
+        margin: 0,
+        filename: `${personalInfo.name || 'Resume'}.pdf`,
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: {
+          scale: 4,
+          useCORS: true,
+          letterRendering: true,
+          logging: true,
+          scrollY: 0,
+          windowWidth: clone.offsetWidth,
+          windowHeight: clone.offsetHeight
+        },
+        jsPDF: {
+          unit: 'mm',
+          format: 'a4',
+          orientation: 'portrait',
+          compress: true,
+          enableLinks: true,
+          pagebreak: { 
+            mode: ['avoid-all', 'css', 'legacy'],
+            before: '.page-break'
+          }
+        }
+      }).from(clone).save();
+  
+      // Cleanup
+      document.body.removeChild(container);
+      
     } catch (error) {
-        console.error('Error generating PDF:', error);
+      console.error('Error generating PDF:', error);
     } finally {
-        setIsDownloading(false);
+      setIsDownloading(false);
     }
   };
 
