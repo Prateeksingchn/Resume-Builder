@@ -13,6 +13,7 @@ import { HiChevronRight, HiDownload, HiUser, HiDocumentText, HiBriefcase, HiAcad
 // import jsPDF from 'jspdf';
 // import html2canvas from 'html2canvas';
 import html2pdf from 'html2pdf.js';
+import { saveAs } from 'file-saver';
 // Remove the unused imports:
 // import jsPDF from 'jspdf';
 // import html2canvas from 'html2canvas';
