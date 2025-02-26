@@ -146,4 +146,123 @@ body {
         margin: 0;
         padding: 0;
     }
+    
+    .resume-preview {
+        padding: 20mm !important;
+    }
+    
+    .contact-info {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 1rem !important;
+    }
+    
+    .social-links {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 1.5rem !important;
+    }
+    
+    svg {
+        width: 12px !important;
+        height: 12px !important;
+        display: inline-block !important;
+        vertical-align: middle !important;
+    }
+}
+
+/* Add these styles to your globals.css */
+.header-section {
+  text-align: center;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.contact-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  margin: 8px 0;
+  flex-wrap: wrap;
+}
+
+.contact-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #000000;
+  font-size: 12px;
+}
+
+.contact-icon {
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  margin-right: 4px;
+  flex-shrink: 0;
+}
+
+.social-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.social-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #000000;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.social-icon {
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  margin-right: 2px;
+  flex-shrink: 0;
+}
+
+@media print {
+  html, body {
+    height: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden;
+  }
+
+  #resume-preview {
+    margin: 0;
+    padding: 20mm;
+    transform: none !important;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: white;
+  }
+
+  .resume-container {
+    transform: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+}
+
+/* Hide elements when printing */
+@media print {
+  button,
+  nav,
+  .no-print {
+    display: none !important;
+  }
 }

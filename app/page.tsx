@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PersonalInfo from './components/PersonalInfo';
 import ProfileSummary from './components/ProfileSummary';
 import EducationSection from './components/Education';
@@ -10,6 +10,7 @@ import CertificationsSection from './components/Certifications';
 import ProjectsSection from './components/Projects';
 import ResumePreview from './components/ResumePreview';
 import { HiChevronRight, HiDownload, HiUser, HiDocumentText, HiBriefcase, HiAcademicCap, HiCode, HiCollection, HiBadgeCheck } from 'react-icons/hi';
+import { useReactToPrint } from 'react-to-print';
 // import jsPDF from 'jspdf';
 // import html2canvas from 'html2canvas';
 import html2pdf from 'html2pdf.js';
@@ -78,6 +79,8 @@ export default function Home() {
   const [activeSection, setActiveSection] = useState('personal');
   const [isDownloading, setIsDownloading] = useState(false);
 
+  const resumeRef = useRef<HTMLDivElement>(null);
+
   // Save data to local storage whenever any state changes
   useEffect(() => {
     localStorage.setItem('personalInfo', JSON.stringify(personalInfo));
@@ -107,149 +110,28 @@ export default function Home() {
 
   const progress = calculateProgress();
 
-  // Update the handleDownloadPDF function
-  const handleDownloadPDF = async () => {
-    setIsDownloading(true);
-    const element = document.getElementById('resume-preview');
-    
-    if (!element) {
-      setIsDownloading(false);
-      return;
-    }
-  
-    try {
-      // Create a deep clone of the resume preview
-      const clone = element.cloneNode(true) as HTMLElement;
-      
-      // Create a container with exact A4 dimensions
-      const container = document.createElement('div');
-      container.style.position = 'absolute';
-      container.style.left = '-9999px';
-      container.style.top = '0';
-      container.appendChild(clone);
-      
-      // Set exact A4 dimensions and styles
-      Object.assign(clone.style, {
-        width: '210mm',
-        minHeight: '297mm',
-        margin: '0',
-        padding: '10mm',
-        boxSizing: 'border-box',
-        border: 'none',
-        backgroundColor: 'white',
-        transform: 'none',
-        position: 'relative'
-      });
-  
-      // Fix icon alignment
-      const icons = clone.querySelectorAll('.react-icons');
-      icons.forEach(icon => {
-        Object.assign((icon as HTMLElement).style, {
-          display: 'inline-flex',
-          verticalAlign: 'middle',
-          alignItems: 'center',
-          marginRight: '4px'
-        });
-      });
-  
-      // Ensure links with icons are properly aligned
-      const iconLinks = clone.querySelectorAll('a');
-      iconLinks.forEach(link => {
-        Object.assign((link as HTMLElement).style, {
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '4px'
-        });
-      });
-  
-      // Copy all styles
-      const styleSheets = document.styleSheets;
-      let styles = '';
-      for (let i = 0; i < styleSheets.length; i++) {
-        try {
-          const rules = styleSheets[i].cssRules || styleSheets[i].rules;
-          for (let j = 0; j < rules.length; j++) {
-            styles += rules[j].cssText + '\n';
-          }
-        } catch (e) {
-          console.warn('Could not access stylesheet rules');
+  const handleDownloadPDF = useReactToPrint({
+    content: () => resumeRef.current,
+    documentTitle: `${personalInfo.name || 'Resume'}.pdf`,
+    pageStyle: `
+      @page {
+        size: A4;
+        margin: 20mm;
+      }
+      @media print {
+        body {
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+        
+        .resume-container {
+          width: 100% !important;
+          height: 100% !important;
+          transform: none !important;
         }
       }
-  
-      // Create and append a style element with additional fixes
-      const styleElement = document.createElement('style');
-      styleElement.textContent = `
-        ${styles}
-        @page {
-          size: A4;
-          margin: 0;
-        }
-        * {
-          -webkit-print-color-adjust: exact !important;
-          color-adjust: exact !important;
-          print-color-adjust: exact !important;
-        }
-        .react-icons {
-          display: inline-flex !important;
-          vertical-align: middle !important;
-          align-items: center !important;
-          margin-right: 4px !important;
-        }
-        a {
-          display: inline-flex !important;
-          align-items: center !important;
-          gap: 4px !important;
-          text-decoration: none !important;
-        }
-        svg {
-          width: 1em !important;
-          height: 1em !important;
-        }
-      `;
-      clone.appendChild(styleElement);
-  
-      // Append to document
-      document.body.appendChild(container);
-  
-      // Force all fonts to load
-      await document.fonts.ready;
-  
-      // Generate PDF with better settings for multi-page support
-      const pdf = await html2pdf().set({
-        margin: 0,
-        filename: `${personalInfo.name || 'Resume'}.pdf`,
-        image: { type: 'jpeg', quality: 1 },
-        html2canvas: {
-          scale: 4,
-          useCORS: true,
-          letterRendering: true,
-          logging: true,
-          scrollY: 0,
-          windowWidth: clone.offsetWidth,
-          windowHeight: clone.offsetHeight
-        },
-        jsPDF: {
-          unit: 'mm',
-          format: 'a4',
-          orientation: 'portrait',
-          compress: true,
-          enableLinks: true,
-          pagebreak: { 
-            mode: ['avoid-all', 'css', 'legacy'],
-            before: '.page-break'
-          }
-        }
-      }).from(clone).save();
-  
-      // Cleanup
-      document.body.removeChild(container);
-      
-    } catch (error) {
-      console.error('Error generating PDF:', error);
-    } finally {
-      setIsDownloading(false);
-    }
-  };
+    `,
+  });
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -405,39 +287,57 @@ export default function Home() {
 
           {/* Right Section - Preview */}
           <div className="col-span-5">
-            <div className="sticky top-24 overflow-hidden bg-gray-100 rounded-lg p-4">
-                <div 
-                    className="transform scale-[0.6] origin-top-left"
-                    style={{
-                        width: 'fit-content',
-                        minHeight: 'fit-content',
-                        marginLeft: '50px',
-                        position: 'relative',
-                        top: '0',
-                    }}
+            <div className="sticky top-24">
+              <div className="bg-gray-100 rounded-lg p-4">
+                {/* Download Button */}
+                <button
+                  onClick={handleDownloadPDF}
+                  disabled={isDownloading}
+                  className="w-full mb-4 py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2 disabled:opacity-50"
                 >
-                    <div 
-                        id="resume-preview" 
-                        className="bg-white shadow-xl border border-gray-200"
-                        style={{
-                            width: '210mm',
-                            minHeight: '297mm',
-                            padding: '10mm',
-                            boxSizing: 'border-box',
-                            backgroundColor: 'white',
-                        }}
-                    >
-                        <ResumePreview
-                            personalInfo={personalInfo}
-                            profileSummary={profileSummary}
-                            education={education}
-                            experience={experience}
-                            skills={skills}
-                            certifications={certifications}
-                            projects={projects}
-                        />
-                    </div>
+                  {isDownloading ? (
+                    'Generating PDF...'
+                  ) : (
+                    <>
+                      <HiDownload className="w-5 h-5" />
+                      Download PDF
+                    </>
+                  )}
+                </button>
+
+                {/* Resume Preview */}
+                <div 
+                  className="resume-container"
+                  style={{
+                    transform: 'scale(0.7)',
+                    transformOrigin: 'top left',
+                    width: '210mm',
+                    marginLeft: '50px'
+                  }}
+                >
+                  <div 
+                    ref={resumeRef}
+                    id="resume-preview" 
+                    className="bg-white shadow-xl"
+                    style={{
+                      width: '210mm',
+                      minHeight: '297mm',
+                      padding: '20mm',
+                      boxSizing: 'border-box',
+                    }}
+                  >
+                    <ResumePreview
+                      personalInfo={personalInfo}
+                      profileSummary={profileSummary}
+                      education={education}
+                      experience={experience}
+                      skills={skills}
+                      certifications={certifications}
+                      projects={projects}
+                    />
+                  </div>
                 </div>
+              </div>
             </div>
           </div>
         </div>

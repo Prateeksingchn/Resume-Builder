@@ -138,109 +138,60 @@ export default function ResumePreview({
   };
 
   return (
-    <main
-      className="font-['Arial'] w-full"
-      style={{
-        fontSize: "12px",
-        lineHeight: "1.2",
-        color: "#000000",
-      }}
-    >
-      {/* Header Section */}
-      <header className="text-center mb-6">
-        <h1 className="text-[24px] font-bold mb-1" style={{ color: "#000000" }}>
-          {resumeData.personalInfo.name}
+    <div className="font-['Arial']" style={{ color: '#000' }}>
+      {/* Header */}
+      <div className="text-center mb-6">
+        <h1 className="text-2xl font-bold mb-1">
+          {personalInfo.name}
         </h1>
-        <h2 className="text-[16px] mb-2" style={{ color: "#000000" }}>
-          {resumeData.personalInfo.designation}
-        </h2>
-        {/* Contact Info - Adjusted spacing */}
-        <div className="flex justify-center items-center gap-4 mb-2 text-[12px] flex-wrap">
-          {resumeData.personalInfo.phone && (
-            <a
-              href={`tel:${resumeData.personalInfo.phone.replace(/\D/g, "")}`}
-              className="inline-flex items-center gap-1 no-underline text-black"
-            >
-              <MdPhone
-                className="w-3 h-3 inline-flex items-center"
-                style={{ verticalAlign: "middle" }}
-              />
-              <span>{resumeData.personalInfo.phone}</span>
-            </a>
+        <p className="text-lg mb-3">
+          {personalInfo.designation}
+        </p>
+        
+        {/* Contact Info */}
+        <div className="flex flex-wrap justify-center items-center gap-4 mb-2">
+          {personalInfo.email && (
+            <div className="flex items-center gap-1">
+              <MdEmail className="w-4 h-4" />
+              <span>{personalInfo.email}</span>
+            </div>
           )}
-          {resumeData.personalInfo.email && (
-            <a
-              href={`mailto:${resumeData.personalInfo.email}`}
-              className="inline-flex items-center gap-1 text-black hover:text-gray-600"
-            >
-              <MdEmail
-                className="w-4 h-4 inline-flex items-center"
-                style={{ verticalAlign: "middle" }}
-              />
-              <span>{resumeData.personalInfo.email}</span>
-            </a>
+          {personalInfo.phone && (
+            <div className="flex items-center gap-1">
+              <MdPhone className="w-4 h-4" />
+              <span>{personalInfo.phone}</span>
+            </div>
           )}
-          {resumeData.personalInfo.location && (
-            <span className="inline-flex items-center gap-1 text-black">
-              <FaMapMarkerAlt
-                className="w-4 h-4 inline-flex items-center"
-                style={{ verticalAlign: "middle" }}
-              />
-              <span>{resumeData.personalInfo.location}</span>
-            </span>
+          {personalInfo.location && (
+            <div className="flex items-center gap-1">
+              <FaMapMarkerAlt className="w-4 h-4" />
+              <span>{personalInfo.location}</span>
+            </div>
           )}
         </div>
-        {/* // In the social links section: */}
-        <div className="flex justify-center gap-6 text-[12px]">
-          {resumeData.personalInfo.twitter && (
-            <a
-              href={resumeData.personalInfo.twitter}
-              className="inline-flex items-center gap-1 text-black hover:text-gray-800"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FaTwitter
-                className="w-3 h-3 inline-flex items-center"
-                style={{ verticalAlign: "middle" }}
-              />
-              <span className="border-b border-black">Twitter</span>
-            </a>
-          )}
-          {resumeData.personalInfo.linkedin && (
-            <a
-              href={resumeData.personalInfo.linkedin}
-              className="flex items-center gap-1 text-black hover:text-gray-800"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FaLinkedin className="w-4 h-4" />
-              <span className="border-b border-black">LinkedIn</span>
-            </a>
-          )}
-          {resumeData.personalInfo.github && (
-            <a
-              href={resumeData.personalInfo.github}
-              className="flex items-center gap-1 text-black hover:text-gray-800"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+
+        {/* Social Links */}
+        <div className="flex flex-wrap justify-center items-center gap-4">
+          {personalInfo.github && (
+            <div className="flex items-center gap-1">
               <FaGithub className="w-4 h-4" />
-              <span className="border-b border-black">GitHub</span>
-            </a>
+              <span>GitHub</span>
+            </div>
           )}
-          {resumeData.personalInfo.portfolio && (
-            <a
-              href={resumeData.personalInfo.portfolio}
-              className="flex items-center gap-1 text-black hover:text-gray-800"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+          {personalInfo.linkedin && (
+            <div className="flex items-center gap-1">
+              <FaLinkedin className="w-4 h-4" />
+              <span>LinkedIn</span>
+            </div>
+          )}
+          {personalInfo.portfolio && (
+            <div className="flex items-center gap-1">
               <FaGlobe className="w-4 h-4" />
-              <span className="border-b border-black">Portfolio</span>
-            </a>
+              <span>Portfolio</span>
+            </div>
           )}
         </div>
-      </header>
+      </div>
 
       {/* Profile Summary - Adjusted margins */}
       <section className="mb-2">
@@ -458,6 +409,6 @@ export default function ResumePreview({
           </div>
         </section>
       )}
-    </main>
+    </div>
   );
 }
